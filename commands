@@ -1,0 +1,15 @@
+//inform server about existing lives
+
+{"command": "events", "events": ["1", "2"]}
+
+//send additional for specified event id
+
+{"command": "additional", "eventID": 1}
+
+//send mainline for specified event id
+
+{"command": "mainline", "eventID": 1}
+
+//connected client is leaving
+{"command": "unload"}
+

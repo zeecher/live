@@ -1,10 +1,22 @@
 package main
 
 import (
-  "fmt"
-  )
+
+  "github.com/zeecher/live/live"
+  "net/http"
+  "log"
+)
+
 
 func main() {
 
-  fmt.Println("Hello World")
+  go live.MessageBroker()
+
+  http.HandleFunc("/ws", live.WsHandler)
+
+  log.Printf("server started at %s\n", live.ServerAddress)
+
+  log.Fatal(http.ListenAndServe(live.ServerAddress, nil))
 }
+
+

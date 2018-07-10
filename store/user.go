@@ -12,11 +12,30 @@ type User struct {
   ready bool
 }
 
-func (s *User) setReady(r bool)  {
+func (s *User) SetReady(r bool)  {
   s.ready = r
 }
 
-
-func (s *User) getReady() bool {
+func (s *User) GetReady() bool {
   return s.ready
+}
+
+func (s *User) GetLive() []int {
+  return s.live
+}
+
+func (s *User) SetLive(lives []int) {
+  s.live = lives
+}
+
+func (s *User) SetAdditional(additional []int) {
+  s.additional = additional
+}
+
+func (s *User) GetAdditional() []int {
+ return s.additional
+}
+
+func (s *User) GetConn() *websocket.Conn {
+  return s.conn
 }
