@@ -5,6 +5,7 @@ import (
   "encoding/json"
   "github.com/garyburd/redigo/redis"
   "github.com/gorilla/websocket"
+  "github.com/zeecher/live/utils"
 )
 
 var PubSubConn *redis.PubSubConn
@@ -93,12 +94,12 @@ func inform(channel string, content string)  {
 
       // if not in the lives add it to the list of lives
       // after adding inform user with new-rate command structure, change command rate to new-rate
-      if !contains(u.GetLive(), iEventID) {
+      if !utils.Contains(u.GetLive(), iEventID) {
         u.SetLive(append(u.GetLive(), iEventID))
         m["command"] = "new-rate"
       }
 
-      if !contains(u.GetAdditional(), iEventID) {
+      if !utils.Contains(u.GetAdditional(), iEventID) {
         for _, record := range m {
           if odds, ok := record.(map[string]interface{}); ok {
             delete(odds, "additional")
@@ -142,9 +143,9 @@ func inform(channel string, content string)  {
       iEventID := int(floatEventID)
 
       // if lives has this match remove it from lives
-      u.SetLive(removeFromSliceIfExists(u.GetLive(), iEventID))
+      u.SetLive(utils.RemoveFromSliceIfExists(u.GetLive(), iEventID))
       // remove eventId from additional
-      u.SetAdditional(removeFromSliceIfExists(u.GetAdditional(), iEventID))
+      u.SetAdditional(utils.RemoveFromSliceIfExists(u.GetAdditional(), iEventID))
 
       log.Printf("finished command %v\n", m)
 
@@ -165,22 +166,4 @@ func inform(channel string, content string)  {
     }
 
   }
-}
-
-func contains(s []int, e int) bool {
-  for _, a := range s {
-    if a == e {
-      return true
-    }
-  }
-  return false
-}
-
-func removeFromSliceIfExists(l []int, item int) []int {
-  for i, other := range l {
-    if other == item {
-      return append(l[:i], l[i+1:]...)
-    }
-  }
-  return l
 }

@@ -6,6 +6,7 @@ import (
   "github.com/gorilla/websocket"
   "log"
   "strconv"
+  "github.com/zeecher/live/utils"
 )
 
 var ServerAddress = ":5005"
@@ -101,7 +102,7 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
         }
 
         // convert eventID interface to int
-        iEventID := interfaceToInt(eventID)
+        iEventID := utils.InterfaceToInt(eventID)
 
         log.Printf("here is one step back%v", UserStore.OneStepBack[iEventID])
 
@@ -133,7 +134,7 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
           }
 
           // append event id to additional slice if not specified
-          u.SetAdditional(appendToSliceIfMissing(u.GetAdditional(), iEventID))
+          u.SetAdditional(utils.AppendToSliceIfMissing(u.GetAdditional(), iEventID))
 
           log.Printf("user additional %v\n.", u.GetAdditional())
         }else {
@@ -155,10 +156,10 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
         }
 
         // convert eventID interface to int
-        iEventID := interfaceToInt(eventID)
+        iEventID := utils.InterfaceToInt(eventID)
 
         // remove eventId from additional
-        u.SetAdditional(removeFromSliceIfExists(u.GetAdditional(), iEventID))
+        u.SetAdditional(utils.RemoveFromSliceIfExists(u.GetAdditional(), iEventID))
 
         // send mainlines only to the client
 
@@ -171,7 +172,7 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
         }
 
 
-        if !contains(u.GetAdditional(), iEventID) {
+        if !utils.Contains(u.GetAdditional(), iEventID) {
           for _, record := range m {
             if odds, ok := record.(map[string]interface{}); ok {
 
@@ -205,7 +206,7 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
                 /* act on str */
                 eventIDint, err := strconv.Atoi(eventIDstr)
                 if err == nil {
-                  u.SetLive(appendToSliceIfMissing(u.GetLive(), eventIDint))
+                  u.SetLive(utils.AppendToSliceIfMissing(u.GetLive(), eventIDint))
                 }
 
               } else {
@@ -233,16 +234,3 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 
 
 
-func interfaceToInt(eventID interface{}) int  {
-  floatEventID, _ := eventID.(float64)
-  return int(floatEventID)
-}
-
-func appendToSliceIfMissing(slice []int, i int) []int {
-  for _, ele := range slice {
-    if ele == i {
-      return slice
-    }
-  }
-  return append(slice, i)
-}
