@@ -4,6 +4,17 @@ import (
   "github.com/gorilla/websocket"
 )
 
+type IUser interface {
+
+  SetReady(r bool)
+  GetReady()
+  GetLive()
+  SetLive(lives []int)
+  SetAdditional(additional []int)
+  GetAdditional()
+  GetConn()
+}
+
 type User struct {
   ID   string
   conn *websocket.Conn

@@ -2,11 +2,14 @@ package store
 
 import (
   "sync"
-  "os/exec"
   "github.com/gorilla/websocket"
-  "log"
+  "github.com/zeecher/live/utils"
 )
 
+type IStore interface {
+
+  NewUser(conn *websocket.Conn) *User
+}
 
 type Store struct {
   Users []*User
@@ -15,15 +18,11 @@ type Store struct {
 
 }
 
+
 func (s *Store) NewUser(conn *websocket.Conn) *User {
 
-  out, err := exec.Command("uuidgen").Output()
-  if err != nil {
-    log.Fatal(err)
-  }
-
   u := &User{
-    ID:   string(out),
+    ID:   utils.GenUUID(),
     conn: conn,
     ready: false,
   }

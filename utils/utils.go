@@ -1,5 +1,8 @@
 package utils
 
+import "os/exec"
+import "log"
+
 
 func Contains(s []int, e int) bool {
   for _, a := range s {
@@ -32,4 +35,16 @@ func AppendToSliceIfMissing(slice []int, i int) []int {
     }
   }
   return append(slice, i)
+}
+
+func GenUUID() string {
+
+  out, err := exec.Command("uuidgen").Output()
+
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  return string(out)
+
 }

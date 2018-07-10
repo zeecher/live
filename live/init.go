@@ -7,6 +7,7 @@ import (
 
 
 var UserStore  *store.Store
+var PubSubStore  *PubSub
 
 
 func init() {
@@ -15,7 +16,13 @@ func init() {
   UserStore  = &store.Store{
     Users: make([]*store.User, 0, 1),
     OneStepBack: map[int]string{},
+
   }
+
+  PubSubStore = &PubSub{}
+
+  PubSubStore.SetRedisConn()
+  PubSubStore.SetPubSubConn()
 
 }
 
