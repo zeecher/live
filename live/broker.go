@@ -129,7 +129,7 @@ func sendToUser(u *store.User, formatted []byte, channel string)  {
   }
 }
 
-func unmarshalNested(content string) map[string]interface  {
+func unmarshalNested(content string) (map[string]interface{})  {
 
   var m = map[string]interface{}{}
 
@@ -140,16 +140,14 @@ func unmarshalNested(content string) map[string]interface  {
     panic(err)
   }
 
-  return m;
+  return m
 
 }
 
 
 func inform(channel string, content string)  {
 
-
-
-
+  m := unmarshalNested(content)
 
   // individual section for every users preferences
   for _, u := range UserStore.Users {
