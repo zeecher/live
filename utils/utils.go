@@ -1,8 +1,6 @@
 package utils
 
-import "os/exec"
-import "log"
-
+import "encoding/json"
 
 func Contains(s []int, e int) bool {
   for _, a := range s {
@@ -37,14 +35,14 @@ func AppendToSliceIfMissing(slice []int, i int) []int {
   return append(slice, i)
 }
 
-func GenUUID() string {
+func UnmarshalToInterface(content string, m *map[string]interface{}) {
 
-  out, err := exec.Command("uuidgen").Output()
+  var err = json.Unmarshal([]byte(content), &m)
 
+  // if error in unmarshal panic about that
   if err != nil {
-    log.Fatal(err)
+    panic(err)
   }
 
-  return string(out)
-
 }
+

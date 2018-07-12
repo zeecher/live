@@ -22,7 +22,7 @@ type Store struct {
 func (s *Store) NewUser(conn *websocket.Conn) *User {
 
   u := &User{
-    ID:   utils.GenUUID(),
+    ID:   utils.GenUUID(utils.RealCommander{}),
     conn: conn,
     ready: false,
   }
