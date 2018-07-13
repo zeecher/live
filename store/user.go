@@ -4,23 +4,17 @@ import (
   "github.com/gorilla/websocket"
 )
 
-type IUser interface {
-
-  SetReady(r bool)
-  GetReady()
-  GetLive()
-  SetLive(lives []int)
-  SetAdditional(additional []int)
-  GetAdditional()
-  GetConn()
-}
 
 type User struct {
-  ID   string
+  id   string
   conn *websocket.Conn
   additional []int // to hold list of additional
   live []int // to hold list of lives
   ready bool
+}
+
+func (s *User) GetId() string  {
+  return s.id
 }
 
 func (s *User) SetReady(r bool)  {

@@ -5,11 +5,13 @@ import (
   "github.com/zeecher/live/pusuber"
   "github.com/zeecher/live/utils"
   "fmt"
-  "sync"
   "github.com/zeecher/live/store"
+  "github.com/zeecher/live/socket"
+  "net/http"
+  "log"
 )
 
-
+var serverAddress = ":5005"
 
 type Message struct {
   MsgStr string
@@ -19,7 +21,7 @@ type Message struct {
 var rateChannel chan Message
 var finishedChannel chan Message
 
-var UserStore  *store.Store
+var uStore  *store.Store
 
 func rateInformer(rateChannel chan Message)  {
 
@@ -36,22 +38,14 @@ func finishedInformer(finishedChannel chan Message)  {
   }
 }
 
-
 func init() {
 
   //slice to store active users
-  UserStore = &store.Store{
-    Users: make([]*store.User, 0, 1),
-    OneStepBack: map[int]string{},
-
-  }
+  uStore = &store.Store{}
+  uStore.InitUsers()
 }
 
 func main() {
-
-  wg := &sync.WaitGroup{}
-
-  wg.Add(2)
 
   rateChannel = make(chan Message)
 
@@ -63,14 +57,13 @@ func main() {
 
   go processChannel("live")
 
-  wg.Wait()
+  http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+    socket.Handler(w, r, uStore)
+  })
 
+  log.Printf("server started at %s\n", serverAddress)
 
- /* http.HandleFunc("/ws", live.WsHandler)
-
-  log.Printf("server started at %s\n", live.ServerAddress)
-
-  log.Fatal(http.ListenAndServe(live.ServerAddress, nil))*/
+  log.Fatal(http.ListenAndServe(serverAddress, nil))
 }
 
 func processChannel(channel string)  {
