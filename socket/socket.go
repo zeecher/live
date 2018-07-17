@@ -40,6 +40,22 @@ func Handler(w http.ResponseWriter, r *http.Request, uStore *store.Store) {
 
       messageType, messageByte, err := user.GetConn().ReadMessage()
 
+
+      if ce, ok := err.(*websocket.CloseError); ok {
+
+          switch ce.Code {
+
+          case websocket.CloseNormalClosure,
+               websocket.CloseGoingAway,
+               websocket.CloseNoStatusReceived:
+
+               user.GetConn().Close()
+               uStore.RemoveUserById(user.GetId())
+
+              return
+          }
+      }
+
       if err != nil {
         log.Printf("socket connection read message error %s\n",err.Error())
         continue
