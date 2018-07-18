@@ -21,6 +21,10 @@ func (s *Store) InitUsers() {
   s.users =  make([]*User, 0, 1)
 }
 
+func (s *Store) InitOneStepBack() {
+  s.oneStepBack = make(map[int]string)
+}
+
 func (s *Store) NewUser(conn *websocket.Conn) *User {
 
   u := &User{
@@ -53,6 +57,7 @@ func (s *Store) Iterator() <-chan User {
   return c
 }
 
+
 func (s *Store) GetOneStepBackEventOdds(eventId int) string {
 
   s.Lock()
@@ -65,6 +70,7 @@ func (s *Store) GetOneStepBackEventOdds(eventId int) string {
 
   return ""
 }
+
 
 func (s *Store) AppendToOneStepBack(eventId int, odds string) {
 
