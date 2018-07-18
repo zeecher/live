@@ -7,7 +7,7 @@ import (
   "github.com/zeecher/live/store"
   "github.com/zeecher/live/utils"
   "encoding/json"
-    "strconv"
+  "strconv"
 )
 
 
@@ -170,7 +170,7 @@ func init() {
         // set user's status to ready in order to receive rates
         user.SetReady(true)
 
-        log.Printf("user lives %v\n", user.GetLive())
+        //log.Printf("user lives %v\n", user.GetLive())
 
         return false
     })
@@ -187,17 +187,16 @@ func Handler(w http.ResponseWriter, r *http.Request, uStore *store.Store) {
     return
   }
 
-  //defer conn.Close()
+  defer conn.Close()
 
-  log.Printf("user slice length before join: %v\n", uStore.GetUsers())
+  //log.Printf("user slice length before join: %v\n", uStore.GetUsers())
 
   //add new user to the store
   user := uStore.NewUser(conn)
 
-  log.Printf("user %s joined\n", user.GetId())
+  //log.Printf("user %s joined\n", user.GetId())
 
-  log.Printf("user slice length after join: %v\n", uStore.GetUsers())
-
+  //log.Printf("user slice length after join: %v\n", uStore.GetUsers())
 
   for {
 
@@ -209,6 +208,7 @@ func Handler(w http.ResponseWriter, r *http.Request, uStore *store.Store) {
 
           case websocket.CloseNormalClosure,
                websocket.CloseGoingAway,
+               websocket.CloseUnsupportedData,
                websocket.CloseNoStatusReceived:
 
                user.GetConn().Close()
